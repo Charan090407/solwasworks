@@ -1,16 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import Cursor from "@/components/Cursor";
+import SmoothScroll from "@/components/SmoothScroll";
+import Loader from "@/components/Loader";
+import Nav from "@/components/Nav";
+import Hero from "@/components/Hero";
+import Services from "@/components/Services";
+import SmartHome from "@/components/SmartHome";
+import Stats from "@/components/Stats";
+import Process from "@/components/Process";
+import Testimonials from "@/components/Testimonials";
+import Team from "@/components/Team";
+import Contact from "@/components/Contact";
+import Footer from "@/components/Footer";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
-  return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
-  );
-};
-
-const Index = PlaceholderIndex;
+const Index = () => (
+  <main className="relative bg-background text-foreground">
+    <Loader />
+    <Cursor />
+    <SmoothScroll />
+    <Nav />
+    <Hero />
+    <Services />
+    <SmartHome />
+    <Stats />
+    <Process />
+    <Testimonials />
+    <Team />
+    <Contact />
+    <Footer />
+  </main>
+);
 
 export default Index;
