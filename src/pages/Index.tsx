@@ -11,9 +11,15 @@ import Testimonials from "@/components/Testimonials";
 import Team from "@/components/Team";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import AmbientOrbs from "@/components/AmbientOrbs";
+import ParticleField from "@/components/ParticleField";
 
 const Index = () => (
   <main className="relative bg-background text-foreground">
+    {/* Global atmosphere layers — rendered below all content */}
+    <AmbientOrbs />
+    <ParticleField />
+
     <Loader />
     <Cursor />
     <SmoothScroll />
