@@ -1,5 +1,6 @@
 import { Instagram, Linkedin, MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const Footer = () => (
   <footer className="relative pt-20 pb-8 bg-gradient-to-b from-background to-[hsl(0_0%_4%)] border-t border-border noise">
@@ -17,8 +18,24 @@ const Footer = () => (
         <div className="md:text-center">
           <div className="text-xs uppercase tracking-[0.2em] text-gold mb-4">Quick Links</div>
           <ul className="space-y-2 text-sm">
-            {["Interiors", "Home Automation", "Solar Fencing", "About", "Contact"].map(l => (
-              <li key={l}><a href="#" data-cursor="link" className="text-foreground/70 hover:text-gold transition-colors">{l}</a></li>
+            {[
+              { label: "Interiors", href: "/interiors" },
+              { label: "Home Automation", href: "/smarthome" },
+              { label: "Solar Fencing", href: "/solar-fencing" },
+              { label: "About", href: "#about" },
+              { label: "Contact", href: "#contact" }
+            ].map(l => (
+              <li key={l.label}>
+                {l.href.startsWith('#') ? (
+                  <a href={l.href} data-cursor="link" className="text-foreground/70 hover:text-gold transition-colors">
+                    {l.label}
+                  </a>
+                ) : (
+                  <Link to={l.href} data-cursor="link" className="text-foreground/70 hover:text-gold transition-colors">
+                    {l.label}
+                  </Link>
+                )}
+              </li>
             ))}
           </ul>
         </div>

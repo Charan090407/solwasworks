@@ -19,7 +19,7 @@ const Testimonials = () => {
   }, [pause]);
 
   return (
-    <section className="relative py-32 overflow-hidden noise">
+    <section id="reviews" className="relative py-32 overflow-hidden noise">
       <div className="absolute inset-0 bg-gradient-radial-gold opacity-30" />
       <div className="container mx-auto px-6 relative">
         <p className="font-italic text-gold tracking-[0.3em] text-xs uppercase mb-4 text-center">— Voices</p>

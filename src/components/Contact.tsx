@@ -9,15 +9,20 @@ interface FieldProps {
   as?: "input" | "textarea";
   value: string;
   onChange: (val: string) => void;
+  error?: boolean;
 }
 
-const Field = ({ label, type = "text", as = "input", value, onChange }: FieldProps) => {
+const Field = ({ label, type = "text", as = "input", value, onChange, error }: FieldProps) => {
   const [focused, setFocused] = useState(false);
   const active = focused || value;
-  const sharedClass = "w-full bg-transparent border-b border-border focus:border-gold pt-5 pb-2 outline-none transition-colors text-foreground resize-none";
+  const borderClass = error ? "border-destructive focus:border-destructive" : "border-border focus:border-gold";
+  const labelColor = error ? "text-destructive" : active ? "text-gold" : "text-muted-foreground";
+  const sharedClass = `w-full bg-transparent border-b ${borderClass} pt-5 pb-2 outline-none transition-colors text-foreground resize-none`;
   return (
     <div className="relative">
-      <label className={`absolute left-0 pointer-events-none transition-all duration-300 ${active ? "top-0 text-[10px] tracking-[0.2em] uppercase text-gold" : "top-4 text-sm text-muted-foreground"}`}>{label}</label>
+      <label className={`absolute left-0 pointer-events-none transition-all duration-300 ${active || error ? `top-0 text-[10px] tracking-[0.2em] uppercase ${labelColor}` : `top-4 text-sm ${labelColor}`}`}>
+        {label} {error && <span className="ml-1 text-destructive normal-case tracking-normal">- Required</span>}
+      </label>
       {as === "textarea" ? (
         <textarea
           value={value}
@@ -79,7 +84,14 @@ const MagneticSubmit = ({ label }: { label: string }) => {
 
 const Contact = () => {
   const [form, setForm] = useState({ name: "", phone: "", email: "", service: "", type: "", msg: "" });
-  const set = (k: string) => (v: string) => setForm(f => ({ ...f, [k]: v }));
+  const [errors, setErrors] = useState({ name: false, phone: false });
+
+  const set = (k: string) => (v: string) => {
+    setForm(f => ({ ...f, [k]: v }));
+    if (k === 'name' || k === 'phone') {
+      setErrors(e => ({ ...e, [k]: false }));
+    }
+  };
   const sectionRef = useRef<HTMLElement>(null);
 
   // Cursor-reactive form glow
@@ -121,7 +133,21 @@ const Contact = () => {
             onMouseMove={onFormMove}
             onSubmit={(e) => {
               e.preventDefault();
-              toast.success("Request sent. We'll be in touch shortly.");
+              const newErrors = {
+                name: !form.name.trim(),
+                phone: !form.phone.trim(),
+              };
+              setErrors(newErrors);
+
+              if (newErrors.name || newErrors.phone) {
+                toast.error("Please provide your Name and Phone Number.");
+                return;
+              }
+
+              const body = `Name: ${form.name}%0D%0APhone: ${form.phone}%0D%0AEmail: ${form.email}%0D%0AService: ${form.service}%0D%0AProject Type: ${form.type}%0D%0AMessage: ${form.msg}`;
+              window.location.href = `mailto:mcharanyadav09358@gmail.com?subject=New Consultation Request from ${form.name}&body=${body}`;
+
+              toast.success("Opening your mail client...");
               setForm({ name: "", phone: "", email: "", service: "", type: "", msg: "" });
             }}
             className="lg:col-span-3 space-y-8 p-8 md:p-10 rounded-2xl bg-surface/60 border border-border relative overflow-hidden cursor-glow-container"
@@ -145,8 +171,8 @@ const Contact = () => {
             />
 
             <div className="grid sm:grid-cols-2 gap-8 relative z-10">
-              <Field label="Full Name" value={form.name} onChange={set("name")} />
-              <Field label="Phone Number" value={form.phone} onChange={set("phone")} />
+              <Field label="Full Name" value={form.name} onChange={set("name")} error={errors.name} />
+              <Field label="Phone Number" value={form.phone} onChange={set("phone")} error={errors.phone} />
             </div>
             <Field label="Email" type="email" value={form.email} onChange={set("email")} />
             <div className="grid sm:grid-cols-2 gap-8 relative z-10">

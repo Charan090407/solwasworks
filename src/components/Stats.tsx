@@ -29,7 +29,7 @@ const stats = [
 const partners = ["Google", "Amazon Alexa", "Apple HomeKit", "Schneider", "Philips Hue", "Bosch", "Sony", "Samsung"];
 
 const Stats = () => (
-  <section className="relative py-24 border-y border-border overflow-hidden noise">
+  <section id="stats" className="relative py-24 border-y border-border overflow-hidden noise">
     <div className="container mx-auto px-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-y-10 divide-x divide-gold/20">
         {stats.map((s, i) => (

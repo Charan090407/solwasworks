@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Diamond, Cpu, Sun, ArrowUpRight, RotateCcw } from "lucide-react";
 
 const G = {
@@ -24,16 +25,19 @@ const services = [
     icon: Diamond, num: "01", title: "Interiors",
     desc: "Turnkey interior services from concept to completion — design coordination, procurement, quality and safety unified under one roof.",
     chips: ["Residential", "Commercial", "Turnkey", "Design-Build"],
+    link: "/interiors"
   },
   {
     icon: Cpu, num: "02", title: "Home Automation",
     desc: "Integrated lighting, climate, security and smart devices on a single platform built for reliability and energy efficiency.",
     chips: ["Smart Lighting", "Climate Control", "Security", "Voice Control"],
+    link: "/smarthome"
   },
   {
     icon: Sun, num: "03", title: "Solar Fencing",
     desc: "Solar-powered perimeter security for industrial and agricultural sites — durable, sustainable, zero grid dependence.",
     chips: ["Industrial", "Agricultural", "Zero Grid", "Low Maintenance"],
+    link: "/solar-fencing"
   },
 ];
 
@@ -65,7 +69,6 @@ const CSS = `
 .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(72px);
   pointer-events: none;
   will-change: transform;
 }
@@ -142,13 +145,20 @@ const CSS = `
 }
 
 .lx-stack {
-  max-width: 860px;
+  max-width: 1100px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
   position: relative;
   z-index: 2;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .lx-stack {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+  }
 }
 
 /* ── Card scene / tilt ── */
@@ -186,7 +196,7 @@ const CSS = `
   transition: transform .78s cubic-bezier(0.16,1,0.3,1);
   position: relative;
   width: 100%;
-  height: 200px;
+  aspect-ratio: 9 / 16;
 }
 .c-inner.flipped { transform: rotateY(180deg); }
 
@@ -280,22 +290,7 @@ const CSS = `
 }
 .c-tilt:hover .c-glow { opacity: 1; }
 
-/* ── Flip hint label ── */
-.c-hint {
-  position: absolute;
-  top: 11px; right: 13px;
-  z-index: 14;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: 'Space Mono', monospace;
-  font-size: 8px;
-  letter-spacing: .1em;
-  color: rgba(255,255,255,0.14);
-  pointer-events: none;
-  transition: color .28s cubic-bezier(0.16,1,0.3,1);
-}
-.c-tilt:hover .c-hint { color: rgba(200,164,74,0.5); }
+
 
 /* ── FRONT face layout ── */
 .f-layout {
@@ -303,9 +298,12 @@ const CSS = `
   z-index: 6;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   gap: 24px;
-  padding: 0 28px;
+  padding: 32px 24px;
 }
 
 .f-icon {
@@ -313,7 +311,7 @@ const CSS = `
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px;
+  gap: 12px;
 }
 .f-orb {
   width: 52px; height: 52px;
@@ -341,34 +339,43 @@ const CSS = `
   letter-spacing: .2em;
 }
 
-.f-text { flex: 1; min-width: 0; }
+.f-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
 .f-title {
   font-family: 'Cormorant Garamond', serif;
   font-weight: 400;
   font-size: clamp(1.5rem, 2.6vw, 2.1rem);
   color: rgba(255,255,255,0.9);
-  margin: 0 0 6px;
+  margin: 0 0 12px;
   line-height: 1.08;
   letter-spacing: -.015em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .f-desc {
   font-size: 12px;
   line-height: 1.62;
   color: rgba(255,255,255,0.24);
-  margin: 0 0 11px;
+  margin: 0 0 16px;
   font-weight: 300;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.f-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.f-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
 .f-chip {
   padding: 2px 9px;
   font-size: 9px;
@@ -437,10 +444,12 @@ const CSS = `
   z-index: 6;
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 36px 0 38px;
+  justify-content: center;
+  padding: 32px 24px;
   overflow: hidden;
+  text-align: center;
 }
 
 .b-label {
@@ -463,15 +472,18 @@ const CSS = `
 }
 
 .b-items {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 7px 28px;
-  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  width: 100%;
 }
 
 .b-item {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   animation: cin .28s cubic-bezier(0.16,1,0.3,1) both;
 }
@@ -497,7 +509,8 @@ const CSS = `
   align-items: center;
   gap: 10px;
   flex-shrink: 0;
-  margin-left: 20px;
+  margin-left: 0;
+  margin-top: 24px;
 }
 
 .b-icon {
@@ -521,19 +534,7 @@ const CSS = `
   user-select: none;
 }
 
-.b-hint {
-  position: absolute;
-  bottom: 11px; right: 14px;
-  z-index: 14;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-family: 'Space Mono', monospace;
-  font-size: 8px;
-  letter-spacing: .08em;
-  color: rgba(255,255,255,0.14);
-  pointer-events: none;
-}
+
 
 /* ── Primary button glow accent ── */
 .btn-glow-wrap {
@@ -553,10 +554,11 @@ const CSS = `
 .c-tilt:hover .btn-glow-wrap::before { opacity: 1; }
 `;
 
-const Card = ({ s }) => {
+const Card = ({ s, onMobileWarning }) => {
   const [flipped, setFlipped] = useState(false);
   const tiltRef = useRef(null);
   const specRef = useRef(null);
+  const navigate = useNavigate();
 
   const onMove = useCallback((e) => {
     const el = tiltRef.current;
@@ -580,6 +582,16 @@ const Card = ({ s }) => {
     }
   }, []);
 
+  const handleClick = () => {
+    if (s.title === "Home Automation" && window.innerWidth < 768) {
+      if (onMobileWarning) onMobileWarning(s.link);
+    } else if (s.link) {
+      navigate(s.link);
+    } else {
+      setFlipped(f => !f);
+    }
+  };
+
   return (
     <div className="c-scene">
       <div
@@ -593,13 +605,12 @@ const Card = ({ s }) => {
         <div className={`c-inner${flipped ? " flipped" : ""}`}>
 
           {/* ─── FRONT ─────────────────────────────────── */}
-          <div className="c-face" onClick={() => setFlipped(true)}>
+          <div className="c-face" onClick={handleClick}>
             <div className="c-glass" />
             <div className="c-glow" />
             <div className="c-ledge" />
             <div className="c-shimmer" />
             <div className="c-spec" ref={specRef} />
-            <div className="c-hint"><RotateCcw size={8} /> flip</div>
             <div className="f-layout">
               <div className="f-icon">
                 <div className="f-orb">
@@ -629,7 +640,7 @@ const Card = ({ s }) => {
           </div>
 
           {/* ─── BACK ──────────────────────────────────── */}
-          <div className="c-face c-face-back" onClick={() => setFlipped(false)}>
+          <div className="c-face c-face-back" onClick={handleClick}>
             <div className="b-glass" />
             <div className="c-ledge" style={{ opacity: 0.45 }} />
             {[320, 210, 110].map((sz, ri) => (
@@ -663,7 +674,6 @@ const Card = ({ s }) => {
                 <span className="b-ghost">{s.num}</span>
               </div>
             </div>
-            <div className="b-hint"><RotateCcw size={8} /> flip back</div>
           </div>
 
         </div>
@@ -673,10 +683,13 @@ const Card = ({ s }) => {
 };
 
 export default function Services() {
+  const [warningLink, setWarningLink] = useState<string | null>(null);
+  const navigate = useNavigate();
+
   return (
     <>
       <style>{CSS}</style>
-      <section className="lx">
+      <section id="services" className="lx">
         {/* Cinematic ambient blobs */}
         <div className="blob blob-a" />
         <div className="blob blob-b" />
@@ -689,12 +702,38 @@ export default function Services() {
           </h2>
         </div>
 
-        <div className="lx-stack">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-[1100px] mx-auto relative z-10 w-full px-4 lg:px-0">
           {services.map((s) => (
-            <Card key={s.title} s={s} />
+            <Card key={s.title} s={s} onMobileWarning={(link) => setWarningLink(link)} />
           ))}
         </div>
       </section>
+
+      {/* Desktop Warning Popup */}
+      {warningLink && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="bg-[#0a0a0c] border border-[#c8a44a]/30 rounded-2xl p-6 md:p-8 max-w-sm w-full text-center shadow-[0_0_40px_rgba(200,164,74,0.1)]">
+            <h3 className="font-serif text-2xl text-white mb-2">Desktop Recommended</h3>
+            <p className="text-sm text-white/60 mb-6 font-sans">
+              For the best, most immersive cinematic experience, we highly recommend viewing the Smart Home Showcase in Desktop mode.
+            </p>
+            <div className="flex flex-col gap-3 font-sans">
+              <button 
+                onClick={() => { navigate(warningLink); setWarningLink(null); }}
+                className="w-full py-3 rounded-full bg-[#c8a44a] text-black font-medium text-sm hover:bg-[#e8cc78] transition-colors"
+              >
+                Continue anyway
+              </button>
+              <button 
+                onClick={() => setWarningLink(null)}
+                className="w-full py-3 rounded-full border border-white/20 text-white/80 font-medium text-sm hover:bg-white/10 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

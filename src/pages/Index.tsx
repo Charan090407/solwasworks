@@ -4,7 +4,6 @@ import Loader from "@/components/Loader";
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
-import SmartHome from "@/components/SmartHome";
 import Stats from "@/components/Stats";
 import Process from "@/components/Process";
 import Testimonials from "@/components/Testimonials";
@@ -26,7 +25,6 @@ const Index = () => (
     <Nav />
     <Hero />
     <Services />
-    <SmartHome />
     <Stats />
     <Process />
     <Testimonials />

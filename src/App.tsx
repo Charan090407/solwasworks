@@ -5,8 +5,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import Interiors from "./Interiors.tsx";
 import { WaterDropletEffect } from "@/components/WaterDropletEffect";
-
+import SmartHome from "@/components/SmartHome";
+import SolarFencing from "./pages/SolarFencing.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -18,6 +20,9 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/smarthome" element={<SmartHome />} />
+          <Route path="/interiors" element={<Interiors />} />
+          <Route path="/solar-fencing" element={<SolarFencing />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

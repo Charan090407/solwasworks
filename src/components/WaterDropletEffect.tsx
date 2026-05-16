@@ -64,6 +64,7 @@ const RippleMark = ({ ripple, onDone }: { ripple: Ripple; onDone: () => void }) 
 
 export const WaterDropletEffect = () => {
   const [ripples, setRipples] = useState<Ripple[]>([]);
+  const [isVisible, setIsVisible] = useState(true);
 
   const addRipple = useCallback((x: number, y: number, color?: string) => {
     const id = Date.now() + Math.random();
@@ -76,18 +77,34 @@ export const WaterDropletEffect = () => {
     return () => { globalEmit = null; };
   }, [addRipple]);
 
+  useEffect(() => {
+    const checkVisibility = () => {
+      const isTouch = window.matchMedia("(pointer: coarse)").matches;
+      const isPortrait = window.innerHeight > window.innerWidth;
+      const isMobile = window.innerWidth < 768;
+      setIsVisible(!(isTouch || isPortrait || isMobile));
+    };
+    
+    checkVisibility();
+    window.addEventListener("resize", checkVisibility);
+    return () => window.removeEventListener("resize", checkVisibility);
+  }, []);
+
   // Cursor click listener
   useEffect(() => {
+    if (!isVisible) return;
     const handlePointerDown = (e: PointerEvent) => {
       addRipple(e.clientX, e.clientY);
     };
     window.addEventListener("pointerdown", handlePointerDown);
     return () => window.removeEventListener("pointerdown", handlePointerDown);
-  }, [addRipple]);
+  }, [addRipple, isVisible]);
 
   const removeRipple = useCallback((id: number) => {
     setRipples((prev) => prev.filter((r) => r.id !== id));
   }, []);
+
+  if (!isVisible) return null;
 
   return (
     <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">

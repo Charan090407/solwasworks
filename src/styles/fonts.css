@@ -1,0 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
+
+/* Apply Instrument Serif for specific classes */
+.font-instrument {
+  font-family: 'Instrument Serif', serif;
+}
+
+/* Inter is standard for body, but we can add a utility if not set by tailwind */
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}

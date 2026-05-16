@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Sofa, Bed, Utensils, Bath, Plus, ChevronUp, ChevronDown, SkipBack, Pause, Play, SkipForward, Wind, Phone, Shuffle, Repeat, Music, Sun, Snowflake, Flame, Battery, Volume2, Eye, EyeOff, PartyPopper } from "lucide-react";
+import { Sofa, Bed, Utensils, Bath, Plus, ChevronUp, ChevronDown, SkipBack, Pause, Play, SkipForward, Wind, Phone, Shuffle, Repeat, Music, Sun, Snowflake, Flame, Battery, Volume2, Eye, EyeOff, PartyPopper, ArrowLeft, ArrowUpRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import Cursor from "@/components/Cursor";
 import { emitRipple } from "@/components/WaterDropletEffect";
 import bedroom from "@/assets/room-bedroom.jpg";
 import dining from "@/assets/room-dining.jpg";
@@ -89,8 +91,27 @@ const SmartHome = () => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const navigate = useNavigate();
+
+  const handleReturnToServices = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/');
+    setTimeout(() => {
+      document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate('/');
+    setTimeout(() => {
+      document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     const onScroll = () => {
       if (!wrapRef.current || !trackRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
@@ -200,6 +221,7 @@ const SmartHome = () => {
 
   return (
     <section id="works" ref={wrapRef} className="relative" style={{ height: "500vh" }}>
+      <Cursor />
       <div className="sticky top-0 h-screen overflow-hidden bg-background">
         {/* Tabs */}
         <div className="absolute top-24 left-1/2 -translate-x-1/2 z-30 glass-pill rounded-full px-2 py-2 flex items-center gap-1 max-w-[95vw] overflow-x-auto">
@@ -220,9 +242,34 @@ const SmartHome = () => {
           </button>
         </div>
 
-        {/* Section label */}
-        <div className="absolute top-6 left-6 z-30">
-          <p className="font-italic text-gold tracking-[0.3em] text-[10px] uppercase">— Works · Smart Home Showcase</p>
+        {/* Back to Home Button & Section Label */}
+        <div className="absolute top-6 left-6 sm:top-10 sm:left-10 z-50 flex items-center gap-4 pointer-events-auto">
+          <a 
+            href="/#services"
+            onClick={handleReturnToServices}
+            className="flex items-center gap-3 text-white/80 hover:text-white transition-colors group"
+          >
+            <div className="w-10 h-10 rounded-full bg-black/20 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:bg-white/10 transition-all duration-300">
+              <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" />
+            </div>
+            <span className="text-xs uppercase tracking-[0.2em] font-medium hidden sm:block drop-shadow-md">
+              Return Home
+            </span>
+          </a>
+          <div className="hidden md:block w-px h-6 bg-white/20" />
+          <p className="hidden md:block font-italic text-gold tracking-[0.3em] text-[10px] uppercase drop-shadow-md">
+            — Smart Home Showcase
+          </p>
+        </div>
+
+        {/* Elegant Top-right Section Indicator */}
+        <div className="absolute top-6 right-6 md:top-10 md:right-10 z-50 text-right pointer-events-none drop-shadow-md">
+          <h3 className="font-['Anton'] text-lg md:text-2xl text-white/30 uppercase tracking-widest">
+            02 // Home Automation
+          </h3>
+          <p className="font-['Inter'] text-[10px] md:text-xs text-gold tracking-[0.3em] uppercase mt-1 md:mt-2 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            Intelligent Living Systems
+          </p>
         </div>
 
         {/* Horizontal track */}
@@ -637,6 +684,22 @@ const SmartHome = () => {
                     </div>
                   </div>
                 </Card>
+              </div>
+
+              <div className="col-start-8 col-span-5 row-start-6 flex justify-end items-end pb-4 pointer-events-none">
+                <a 
+                  href="/#contact"
+                  onClick={handleContactClick}
+                  className="group flex items-center gap-2 md:gap-3 font-['Anton'] text-2xl md:text-4xl text-[#c8a44a] uppercase tracking-wider hover:opacity-80 transition-opacity duration-300 pointer-events-auto"
+                >
+                  <span className="relative drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+                    CONTACT
+                    <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[#c8a44a] scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out"></span>
+                  </span>
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#c8a44a] text-black flex items-center justify-center transform group-hover:translate-x-2 transition-transform duration-300 shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+                    <ArrowUpRight className="w-5 h-5 md:w-6 md:h-6" />
+                  </div>
+                </a>
               </div>
 
             </div>

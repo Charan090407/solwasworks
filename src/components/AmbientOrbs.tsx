@@ -32,7 +32,6 @@ const Orb = ({ x, y, w, h, color, opacity, floatX = 30, floatY = 40, duration = 
         left: `${x}%`, top: `${y}%`,
         width: w, height: h,
         background: `radial-gradient(ellipse, ${color} 0%, transparent 68%)`,
-        filter: "blur(48px)",
         x: springX,
         y: springY,
       }}
@@ -45,8 +44,8 @@ const Orb = ({ x, y, w, h, color, opacity, floatX = 30, floatY = 40, duration = 
   );
 };
 
-const AmbientOrbs = () => (
-  <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden>
+const AmbientOrbs = ({ className = "fixed inset-0 z-0" }: { className?: string }) => (
+  <div className={`pointer-events-none ${className} overflow-hidden`} aria-hidden>
     {/* Gold — top left warm glow */}
     <Orb x={-8} y={-5} w={900} h={700} color="hsl(43 60% 54% / 0.10)" opacity={0.10} floatX={35} floatY={45} duration={16} parallaxStrength={28} />
     {/* Blue — right side cool contrast */}
@@ -60,7 +59,7 @@ const AmbientOrbs = () => (
     {/* Gold pulse — center hero highlight */}
     <motion.div
       className="absolute rounded-full pointer-events-none"
-      style={{ left: "30%", top: "10%", width: 400, height: 400, background: "radial-gradient(circle, hsl(43 52% 54% / 0.06) 0%, transparent 70%)", filter: "blur(40px)" }}
+      style={{ left: "30%", top: "10%", width: 400, height: 400, background: "radial-gradient(circle, hsl(43 52% 54% / 0.06) 0%, transparent 70%)" }}
       animate={{ scale: [1, 1.3, 1], opacity: [0.06, 0.14, 0.06] }}
       transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
     />

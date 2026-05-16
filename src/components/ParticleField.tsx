@@ -17,9 +17,24 @@ const ParticleField = () => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const PARTICLE_COUNT = 90;
+    const PARTICLE_COUNT = 50;
     const CONNECTION_DIST = 130;
     const GOLD = { r: 191, g: 154, b: 78 }; // hsl(43 52% 54%)
+
+    // Pre-render soft glow to an offscreen canvas for extreme performance boost
+    const maxGlowRadius = 15; // particles size maxes around ~2.2, * 6 is ~13.2. We use 15.
+    const glowCanvas = document.createElement('canvas');
+    glowCanvas.width = maxGlowRadius * 2;
+    glowCanvas.height = maxGlowRadius * 2;
+    const gctx = glowCanvas.getContext('2d');
+    if (gctx) {
+      const gGrad = gctx.createRadialGradient(maxGlowRadius, maxGlowRadius, 0, maxGlowRadius, maxGlowRadius, maxGlowRadius);
+      gGrad.addColorStop(0, `rgba(${GOLD.r},${GOLD.g},${GOLD.b},1)`);
+      gGrad.addColorStop(1, `rgba(${GOLD.r},${GOLD.g},${GOLD.b},0)`);
+      gctx.fillStyle = gGrad;
+      gctx.arc(maxGlowRadius, maxGlowRadius, maxGlowRadius, 0, Math.PI * 2);
+      gctx.fill();
+    }
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -48,7 +63,9 @@ const ParticleField = () => {
     let frame = 0;
     const draw = () => {
       rafRef.current = requestAnimationFrame(draw);
+      ctx.globalCompositeOperation = 'source-over';
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'screen';
       frame++;
 
       const particles = particlesRef.current;
@@ -97,15 +114,12 @@ const ParticleField = () => {
 
       // Draw particles
       for (const p of particles) {
-        // Soft outer glow for close particles
+        // Soft outer glow for close particles using pre-rendered canvas
         if (p.depth > 0.6) {
-          const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 6);
-          grad.addColorStop(0, `rgba(${GOLD.r},${GOLD.g},${GOLD.b},${p.opacity * 0.4})`);
-          grad.addColorStop(1, `rgba(${GOLD.r},${GOLD.g},${GOLD.b},0)`);
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 6, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
+          const radius = p.size * 6;
+          ctx.globalAlpha = p.opacity * 0.4;
+          ctx.drawImage(glowCanvas, p.x - radius, p.y - radius, radius * 2, radius * 2);
+          ctx.globalAlpha = 1.0;
         }
         // Core
         ctx.beginPath();
@@ -128,7 +142,6 @@ const ParticleField = () => {
     <canvas
       ref={canvasRef}
       className="pointer-events-none fixed inset-0 z-[1]"
-      style={{ mixBlendMode: "screen" }}
       aria-hidden
     />
   );
