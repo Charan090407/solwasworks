@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Sofa, Bed, Utensils, Bath, Plus, ChevronUp, ChevronDown, SkipBack, Pause, Play, SkipForward, Wind, Phone, Shuffle, Repeat, Music, Sun, Snowflake, Flame, Battery, Volume2, Eye, EyeOff, PartyPopper, ArrowLeft, ArrowUpRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Cursor from "@/components/Cursor";
+import Loader from "@/components/Loader";
 import { emitRipple } from "@/components/WaterDropletEffect";
 import bedroom from "@/assets/room-bedroom.jpg";
 import dining from "@/assets/room-dining.jpg";
@@ -159,7 +160,7 @@ const SmartHome = () => {
   const [pendant, setPendant] = useState(true);
   const [wallLights, setWallLights] = useState(true);
   const [waterLevel, setWaterLevel] = useState(10);
-  
+
   // App State
   const [previewMode, setPreviewMode] = useState(false);
   const [showLightsList, setShowLightsList] = useState(false);
@@ -221,6 +222,7 @@ const SmartHome = () => {
 
   return (
     <section id="works" ref={wrapRef} className="relative" style={{ height: "500vh" }}>
+      <Loader />
       <Cursor />
       <div className="sticky top-0 h-screen overflow-hidden bg-background">
         {/* Tabs */}
@@ -244,7 +246,7 @@ const SmartHome = () => {
 
         {/* Back to Home Button & Section Label */}
         <div className="absolute top-6 left-6 sm:top-10 sm:left-10 z-50 flex items-center gap-4 pointer-events-auto">
-          <a 
+          <a
             href="/#services"
             onClick={handleReturnToServices}
             className="flex items-center gap-3 text-white/80 hover:text-white transition-colors group"
@@ -424,7 +426,7 @@ const SmartHome = () => {
               </div>
               <div className="col-start-5 col-span-3 row-start-2">
                 <Card className="flex items-center justify-between px-4 py-3">
-                  <span className="text-[11px] font-medium">Cool Bright</span>
+                  <span className="text-[11px] font-medium">Cool White</span>
                   <Toggle on={coolBright} onChange={(v) => { setCoolBright(v); if (v) setWarmWhite(false); }} accent="blue" />
                 </Card>
               </div>
@@ -484,14 +486,14 @@ const SmartHome = () => {
             <img src={rooms[2].img} alt="Dining" className="absolute inset-0 w-full h-full object-cover transition-[filter] duration-700"
               style={{ filter: (!pendant && !wallLights) ? "brightness(0.4)" : "brightness(0.95)" }} />
             <div className="absolute inset-0 bg-background/20" />
-            
+
             {/* Pendants blackout overlay */}
-            <div className="absolute inset-0 transition-opacity duration-700 pointer-events-none mix-blend-multiply" 
-                 style={{ opacity: pendant ? 0 : 0.85, background: 'radial-gradient(ellipse 100% 70% at top, black 0%, transparent 60%)' }} />
-                 
+            <div className="absolute inset-0 transition-opacity duration-700 pointer-events-none mix-blend-multiply"
+              style={{ opacity: pendant ? 0 : 0.85, background: 'radial-gradient(ellipse 100% 70% at top, black 0%, transparent 60%)' }} />
+
             {/* Wall lights blackout overlay */}
-            <div className="absolute inset-0 transition-opacity duration-700 pointer-events-none mix-blend-multiply" 
-                 style={{ opacity: wallLights ? 0 : 0.8, background: 'linear-gradient(90deg, black 0%, transparent 25%, transparent 75%, black 100%)' }} />
+            <div className="absolute inset-0 transition-opacity duration-700 pointer-events-none mix-blend-multiply"
+              style={{ opacity: wallLights ? 0 : 0.8, background: 'linear-gradient(90deg, black 0%, transparent 25%, transparent 75%, black 100%)' }} />
 
             <CurtainsOverlay pct={diningCurtain} />
 
@@ -632,19 +634,19 @@ const SmartHome = () => {
             <img src={rooms[4].img} alt="Party Hall" className="absolute inset-0 w-full h-full object-cover transition-[filter] duration-700"
               style={{ filter: "brightness(0.7) contrast(1.2)" }} />
             <div className="absolute inset-0 bg-background/20" />
-            
+
             {/* Vibrant lighting overlay */}
-            <div className="absolute inset-0 transition-opacity duration-1000 mix-blend-color pointer-events-none" 
-                 style={{ 
-                   opacity: vibrantLight ? 0.8 : 0, 
-                   background: 'linear-gradient(45deg, #ff007f, #7f00ff, #00ffff)', 
-                   animation: vibrantLight ? 'hue-spin 4s linear infinite' : 'none' 
-                 }} />
+            <div className="absolute inset-0 transition-opacity duration-1000 mix-blend-color pointer-events-none"
+              style={{
+                opacity: vibrantLight ? 0.8 : 0,
+                background: 'linear-gradient(45deg, #ff007f, #7f00ff, #00ffff)',
+                animation: vibrantLight ? 'hue-spin 4s linear infinite' : 'none'
+              }} />
 
             <CurtainsOverlay pct={partyCurtain} />
 
             <div className={`absolute inset-0 p-6 md:p-12 grid grid-cols-12 grid-rows-6 gap-3 md:gap-4 z-20 pointer-events-none *:pointer-events-auto transition-opacity duration-500 ${previewMode ? 'opacity-0' : 'opacity-100'}`}>
-              
+
               <div className="col-start-1 col-span-4 row-start-2">
                 <Card className="flex items-center justify-between px-4 py-3">
                   <span className="text-[11px]">Vibrant lighting</span>
@@ -687,7 +689,7 @@ const SmartHome = () => {
               </div>
 
               <div className="col-start-8 col-span-5 row-start-6 flex justify-end items-end pb-4 pointer-events-none">
-                <a 
+                <a
                   href="/#contact"
                   onClick={handleContactClick}
                   className="group flex items-center gap-2 md:gap-3 font-['Anton'] text-2xl md:text-4xl text-[#c8a44a] uppercase tracking-wider hover:opacity-80 transition-opacity duration-300 pointer-events-auto"

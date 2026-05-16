@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { ChevronDown, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Cursor from "@/components/Cursor";
+import Loader from "@/components/Loader";
 import Rooms from './components/Rooms';
 import Contact from './components/Contact';
 import AmbientOrbs from './components/AmbientOrbs';
@@ -14,6 +15,7 @@ export default function Interiors() {
 
   return (
     <div className="bg-[#f0f0ee]">
+      <Loader />
       <Cursor />
       <div className="relative min-h-screen overflow-hidden">
         {/* Background Video */}

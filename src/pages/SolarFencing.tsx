@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate as useRouterNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import Cursor from '@/components/Cursor';
+import Loader from '@/components/Loader';
 import AmbientOrbs from '@/components/AmbientOrbs';
 
 import FarmImg from '@/assets/Solar/Farm.png';
@@ -152,6 +153,7 @@ export default function SolarFencing() {
         transition: 'background-color 650ms cubic-bezier(0.4,0,0.2,1)',
       }}
     >
+      <Loader />
       <Cursor />
       <AmbientOrbs className="absolute inset-0 z-0 opacity-60 mix-blend-screen" />
       {/* 1. Grain Overlay */}
