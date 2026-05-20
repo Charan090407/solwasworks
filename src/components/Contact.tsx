@@ -1,50 +1,9 @@
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
-import { toast } from "sonner";
 
-interface FieldProps {
-  label: string;
-  type?: string;
-  as?: "input" | "textarea";
-  value: string;
-  onChange: (val: string) => void;
-  error?: boolean;
-}
-
-const Field = ({ label, type = "text", as = "input", value, onChange, error }: FieldProps) => {
-  const [focused, setFocused] = useState(false);
-  const active = focused || value;
-  const borderClass = error ? "border-destructive focus:border-destructive" : "border-border focus:border-gold";
-  const labelColor = error ? "text-destructive" : active ? "text-gold" : "text-muted-foreground";
-  const sharedClass = `w-full bg-transparent border-b ${borderClass} pt-5 pb-2 outline-none transition-colors text-foreground resize-none`;
-  return (
-    <div className="relative">
-      <label className={`absolute left-0 pointer-events-none transition-all duration-300 ${active || error ? `top-0 text-[10px] tracking-[0.2em] uppercase ${labelColor}` : `top-4 text-sm ${labelColor}`}`}>
-        {label} {error && <span className="ml-1 text-destructive normal-case tracking-normal">- Required</span>}
-      </label>
-      {as === "textarea" ? (
-        <textarea
-          value={value}
-          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => onChange(e.target.value)}
-          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-          rows={3}
-          className={sharedClass}
-        />
-      ) : (
-        <input
-          type={type} value={value}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
-          onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
-          className={sharedClass}
-        />
-      )}
-    </div>
-  );
-};
-
-// Magnetic submit button
-const MagneticSubmit = ({ label }: { label: string }) => {
+// Magnetic button
+const MagneticButton = ({ label, onClick }: { label: string, onClick?: () => void }) => {
   const ref = useRef<HTMLButtonElement>(null);
   const x = useSpring(useMotionValue(0), { stiffness: 180, damping: 18 });
   const y = useSpring(useMotionValue(0), { stiffness: 180, damping: 18 });
@@ -60,7 +19,8 @@ const MagneticSubmit = ({ label }: { label: string }) => {
   return (
     <motion.button
       ref={ref}
-      type="submit"
+      type="button"
+      onClick={onClick}
       data-cursor="link"
       style={{ x, y }}
       onMouseMove={onMove}
@@ -83,21 +43,12 @@ const MagneticSubmit = ({ label }: { label: string }) => {
 };
 
 const Contact = () => {
-  const [form, setForm] = useState({ name: "", phone: "", email: "", service: "", type: "", msg: "" });
-  const [errors, setErrors] = useState({ name: false, phone: false });
-
-  const set = (k: string) => (v: string) => {
-    setForm(f => ({ ...f, [k]: v }));
-    if (k === 'name' || k === 'phone') {
-      setErrors(e => ({ ...e, [k]: false }));
-    }
-  };
   const sectionRef = useRef<HTMLElement>(null);
 
   // Cursor-reactive form glow
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const onFormMove = (e: React.MouseEvent<HTMLFormElement>) => {
+  const onFormMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     mouseX.set(e.clientX - rect.left);
     mouseY.set(e.clientY - rect.top);
@@ -127,30 +78,11 @@ const Contact = () => {
         </motion.div>
 
         <div className="grid lg:grid-cols-5 gap-12">
-          <motion.form
+          <motion.div
             initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             onMouseMove={onFormMove}
-            onSubmit={(e) => {
-              e.preventDefault();
-              const newErrors = {
-                name: !form.name.trim(),
-                phone: !form.phone.trim(),
-              };
-              setErrors(newErrors);
-
-              if (newErrors.name || newErrors.phone) {
-                toast.error("Please provide your Name and Phone Number.");
-                return;
-              }
-
-              const body = `Name: ${form.name}%0D%0APhone: ${form.phone}%0D%0AEmail: ${form.email}%0D%0AService: ${form.service}%0D%0AProject Type: ${form.type}%0D%0AMessage: ${form.msg}`;
-              window.location.href = `mailto:mcharanyadav09358@gmail.com?subject=New Consultation Request from ${form.name}&body=${body}`;
-
-              toast.success("Opening your mail client...");
-              setForm({ name: "", phone: "", email: "", service: "", type: "", msg: "" });
-            }}
-            className="lg:col-span-3 space-y-8 p-8 md:p-10 rounded-2xl bg-surface/60 border border-border relative overflow-hidden cursor-glow-container"
+            className="lg:col-span-3 space-y-8 p-8 md:p-10 rounded-2xl bg-surface/60 border border-border relative overflow-hidden cursor-glow-container flex flex-col items-center justify-center text-center min-h-[400px]"
             style={{
               background: "hsl(0 0% 9% / 0.7)",
               backdropFilter: "blur(20px)",
@@ -170,20 +102,20 @@ const Contact = () => {
               }}
             />
 
-            <div className="grid sm:grid-cols-2 gap-8 relative z-10">
-              <Field label="Full Name" value={form.name} onChange={set("name")} error={errors.name} />
-              <Field label="Phone Number" value={form.phone} onChange={set("phone")} error={errors.phone} />
+            <div className="relative z-10 flex flex-col items-center gap-6">
+               <div className="w-16 h-16 rounded-full bg-gold/10 flex items-center justify-center mb-2">
+                 <Phone className="w-8 h-8 text-gold" />
+               </div>
+               <h3 className="text-3xl font-serif text-white">Start a Conversation</h3>
+               <p className="text-muted-foreground max-w-md">Reach out to us on WhatsApp to discuss your project and schedule a consultation.</p>
+               <div className="mt-4">
+                 <MagneticButton 
+                   label="Let's Connect" 
+                   onClick={() => window.open('https://wa.me/917799441999', '_blank')}
+                 />
+               </div>
             </div>
-            <Field label="Email" type="email" value={form.email} onChange={set("email")} />
-            <div className="grid sm:grid-cols-2 gap-8 relative z-10">
-              <Field label="Service Interest" value={form.service} onChange={set("service")} />
-              <Field label="Project Type" value={form.type} onChange={set("type")} />
-            </div>
-            <Field label="Message / Brief" as="textarea" value={form.msg} onChange={set("msg")} />
-            <div className="relative z-10">
-              <MagneticSubmit label="Request a Consultation" />
-            </div>
-          </motion.form>
+          </motion.div>
 
           <motion.aside
             initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
@@ -192,8 +124,8 @@ const Contact = () => {
           >
             {[
               { i: MapPin, t: "Studio", v: "5-22, Deepthi Srinagar, Madinaguda, Near Lakshmi Hyundai Service Centre, Hyderabad" },
-              { i: Phone, t: "Call", v: "+91 — Available on request" },
-              { i: Mail, t: "Email", v: "hello@solwas.com" },
+              { i: Phone, t: "Call", v: "+91 7799441999" },
+              { i: Mail, t: "Email", v: "contact@solwas.com" },
               { i: Clock, t: "Hours", v: "Mon — Sat · 10:00 to 19:00" },
             ].map((c, i) => (
               <motion.div

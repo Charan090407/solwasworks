@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import logo from "../assets/logo.jpeg";
 
 const NAV_LINKS = [
   { label: "Home", id: "home", href: "#home" },
@@ -49,7 +50,7 @@ const Nav = () => {
         <div className={`relative w-full max-w-7xl rounded-full border border-white/10 transition-all duration-500 overflow-hidden ${scrolled ? "backdrop-blur-xl bg-black/60 shadow-2xl" : "backdrop-blur-md bg-white/10"}`}>
           <nav className="relative flex items-center justify-between px-6 py-4 md:px-8">
             <a href="#home" className="flex items-center gap-2 group" data-cursor="link">
-              <span className="font-instrument text-3xl tracking-tight text-white">Solwas</span>
+              <img src={logo} alt="Solwas" className="h-10 md:h-12 w-auto object-contain rounded-full shadow-md" />
             </a>
             
             <div className="hidden md:flex items-center gap-10">
